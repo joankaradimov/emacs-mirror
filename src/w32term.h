@@ -18,6 +18,9 @@ along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Added by Kevin Gallo */
 
+#ifndef W32TERM_H_INCLUDED
+#define W32TERM_H_INCLUDED
+
 #include "w32gui.h"
 #include "frame.h"
 #include "atimer.h"
@@ -890,3 +893,5 @@ extern void w32_init_main_thread (void);
 #ifdef CYGWIN
 extern int w32_message_fd;
 #endif /* CYGWIN */
+
+#endif /* not W32TERM_H_INCLUDED */
