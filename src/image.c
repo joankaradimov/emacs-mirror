@@ -6022,7 +6022,7 @@ image_disable_image (struct frame *f, struct image *img)
 {
   Display_Info *dpyinfo = FRAME_DISPLAY_INFO (f);
 #ifdef HAVE_NTGUI
-  int n_planes = dpyinfo->n_planes * dpyinfo->n_cbits;
+  int n_planes = dpyinfo->n_planes * ((struct w32_display_info*) dpyinfo)->n_cbits;
 #else
   int n_planes = dpyinfo->n_planes;
 #endif /* HAVE_NTGUI */

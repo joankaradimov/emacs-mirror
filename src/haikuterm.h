@@ -62,54 +62,23 @@ struct haiku_bitmap_record
 
 struct haiku_display_info
 {
-  /* Chain of all haiku_display_info structures. */
-  struct haiku_display_info *next;
-  C_TERMINAL terminal;
+  struct gui_display_info;
 
-  Lisp_Object name_list_element;
   Lisp_Object color_map;
 
   int n_fonts;
-
-  int smallest_char_width;
-  int smallest_font_height;
 
   struct frame *focused_frame;
   struct frame *focus_event_frame;
   struct frame *last_mouse_glyph_frame;
 
-  struct haiku_bitmap_record *bitmaps;
-  ptrdiff_t bitmaps_size;
-  ptrdiff_t bitmaps_last;
-
-  int grabbed;
-  int n_planes;
   int color_p;
-
-  Window root_window;
-  Lisp_Object rdb;
-
-  Emacs_Cursor vertical_scroll_bar_cursor;
-  Emacs_Cursor horizontal_scroll_bar_cursor;
-
-  Mouse_HLInfo mouse_highlight;
-
-  C_FRAME highlight_frame;
-  C_FRAME last_mouse_frame;
-  C_FRAME last_mouse_motion_frame;
-
-  int last_mouse_motion_x;
-  int last_mouse_motion_y;
 
   struct haiku_rect last_mouse_glyph;
 
   void *last_mouse_scroll_bar;
 
   haiku display;
-
-  double resx, resy;
-
-  Time last_mouse_movement_time;
 };
 
 struct haiku_output

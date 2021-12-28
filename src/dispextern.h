@@ -91,9 +91,10 @@ xstrcasecmp (char const *a, char const *b)
   return c_strcasecmp (a, b);
 }
 
+typedef struct gui_display_info Display_Info;
+
 #ifdef HAVE_X_WINDOWS
 #include <X11/Xresource.h> /* for XrmDatabase */
-typedef struct x_display_info Display_Info;
 #ifndef USE_CAIRO
 typedef XImage *Emacs_Pix_Container;
 typedef XImage *Emacs_Pix_Context;
@@ -116,7 +117,6 @@ typedef Emacs_Pix_Container Emacs_Pix_Context;
 
 #ifdef HAVE_NTGUI
 #include "w32gui.h"
-typedef struct w32_display_info Display_Info;
 typedef XImage *Emacs_Pix_Container;
 typedef HDC Emacs_Pix_Context;
 #endif
@@ -124,7 +124,6 @@ typedef HDC Emacs_Pix_Context;
 #ifdef HAVE_NS
 #include "nsgui.h"
 /* Following typedef needed to accommodate the MSDOS port, believe it or not.  */
-typedef struct ns_display_info Display_Info;
 typedef Emacs_Pixmap Emacs_Pix_Container;
 typedef Emacs_Pixmap Emacs_Pix_Context;
 #endif
@@ -132,14 +131,12 @@ typedef Emacs_Pixmap Emacs_Pix_Context;
 #ifdef HAVE_PGTK
 #include "pgtkgui.h"
 /* Following typedef needed to accommodate the MSDOS port, believe it or not.  */
-typedef struct pgtk_display_info Display_Info;
 typedef Emacs_Pixmap XImagePtr;
 typedef XImagePtr XImagePtr_or_DC;
 #endif /* HAVE_PGTK */
 
 #ifdef HAVE_HAIKU
 #include "haikugui.h"
-typedef struct haiku_display_info Display_Info;
 typedef Emacs_Pixmap Emacs_Pix_Container;
 typedef Emacs_Pixmap Emacs_Pix_Context;
 #endif

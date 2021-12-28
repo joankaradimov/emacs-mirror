@@ -110,21 +110,13 @@ struct scroll_bar
   bool horizontal;
 };
 
-
 /* init'd in pgtk_initialize_display_info () */
 struct pgtk_display_info
 {
-  /* Chain of all pgtk_display_info structures.  */
-  struct pgtk_display_info *next;
-
-  /* The generic display parameters corresponding to this PGTK display. */
-  struct terminal *terminal;
+  struct gui_display_info;
 
   /* This says how to access this display in Gdk.  */
   GdkDisplay *gdpy;
-
-  /* This is a cons cell of the form (NAME . FONT-LIST-CACHE).  */
-  Lisp_Object name_list_element;
 
   /* Number of frames that are on this display.  */
   int reference_count;
@@ -138,46 +130,12 @@ struct pgtk_display_info
   /* The number of fonts loaded. */
   int n_fonts;
 
-  /* Minimum width over all characters in all fonts in font_table.  */
-  int smallest_char_width;
-
-  /* Minimum font height over all fonts in font_table.  */
-  int smallest_font_height;
-
-  struct pgtk_bitmap_record *bitmaps;
-  ptrdiff_t bitmaps_size;
-  ptrdiff_t bitmaps_last;
-
-  /* DPI resolution of this screen */
-  double resx, resy;
-
-  /* Mask of things that cause the mouse to be grabbed */
-  int grabbed;
-
-  int n_planes;
-
   int color_p;
 
   /* Emacs bitmap-id of the default icon bitmap for this frame.
      Or -1 if none has been allocated yet.  */
   ptrdiff_t icon_bitmap_id;
 
-  Window root_window;
-
-  /* Xism */
-  XrmDatabase rdb;
-
-  /* The cursor to use for vertical scroll bars. */
-  Emacs_Cursor vertical_scroll_bar_cursor;
-
-  /* The cursor to use for horizontal scroll bars. */
-  Emacs_Cursor horizontal_scroll_bar_cursor;
-
-  /* Information about the range of text currently shown in
-     mouse-face.  */
-  Mouse_HLInfo mouse_highlight;
-
-  struct frame *highlight_frame;
   struct frame *x_focus_frame;
 
   /* The last frame mentioned in a FocusIn or FocusOut event.  This is
@@ -186,22 +144,8 @@ struct pgtk_display_info
      received a FocusIn event for it.  */
   struct frame *x_focus_event_frame;
 
-  /* The frame where the mouse was last time we reported a mouse event.  */
-  struct frame *last_mouse_frame;
-
-  /* The frame where the mouse was last time we reported a mouse motion.  */
-  struct frame *last_mouse_motion_frame;
-
-  /* Position where the mouse was last time we reported a motion.
-     This is a position on last_mouse_motion_frame.  */
-  int last_mouse_motion_x;
-  int last_mouse_motion_y;
-
   /* Where the mouse was last time we reported a mouse position.  */
   XRectangle last_mouse_glyph;
-
-  /* Time of last mouse movement.  */
-  Time last_mouse_movement_time;
 
   /* The scroll bar in which the last motion event occurred.  */
   void *last_mouse_scroll_bar;

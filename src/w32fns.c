@@ -328,7 +328,7 @@ static struct w32_display_info *w32_display_info_for_name (Lisp_Object);
    nil stands for the selected frame--or, if that is not a w32 frame,
    the first display on the list.  */
 
-struct w32_display_info *
+Display_Info *
 check_x_display_info (Lisp_Object object)
 {
   if (NILP (object))

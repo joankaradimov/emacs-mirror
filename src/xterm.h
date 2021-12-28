@@ -209,11 +209,7 @@ Status x_parse_color (struct frame *f, const char *color_name,
 
 struct x_display_info
 {
-  /* Chain of all x_display_info structures.  */
-  struct x_display_info *next;
-
-  /* The generic display parameters corresponding to this X display. */
-  struct terminal *terminal;
+  struct gui_display_info;
 
   /* This says how to access this display in Xlib.  */
   Display *display;
@@ -221,17 +217,11 @@ struct x_display_info
   /* A connection number (file descriptor) for the display.  */
   int connection;
 
-  /* This is a cons cell of the form (NAME . FONT-LIST-CACHE).  */
-  Lisp_Object name_list_element;
-
   /* Number of frames that are on this display.  */
   int reference_count;
 
   /* The Screen this connection is connected to.  */
   Screen *screen;
-
-  /* Dots per inch of the screen.  */
-  double resx, resy;
 
   /* The Visual being used for this display.  */
   Visual *visual;
@@ -239,27 +229,12 @@ struct x_display_info
   /* The colormap being used.  */
   Colormap cmap;
 
-  /* Number of planes on this screen.  */
-  int n_planes;
-
-  /* Mask of things that cause the mouse to be grabbed.  */
-  int grabbed;
-
   /* Emacs bitmap-id of the default icon bitmap for this frame.
      Or -1 if none has been allocated yet.  */
   ptrdiff_t icon_bitmap_id;
 
-  /* The root window of this screen.  */
-  Window root_window;
-
   /* Client leader window.  */
   Window client_leader_window;
-
-  /* The cursor to use for vertical scroll bars.  */
-  Cursor vertical_scroll_bar_cursor;
-
-  /* The cursor to use for horizontal scroll bars.  */
-  Cursor horizontal_scroll_bar_cursor;
 
   /* The invisible cursor used for pointer blanking.
      Unused if this display supports Xfixes extension.  */
@@ -273,21 +248,8 @@ struct x_display_info
   GdkCursor *xg_cursor;
 #endif
 
-  /* X Resource data base */
-  XrmDatabase rdb;
-
-  /* Minimum width over all characters in all fonts in font_table.  */
-  int smallest_char_width;
-
-  /* Minimum font height over all fonts in font_table.  */
-  int smallest_font_height;
-
   /* Reusable Graphics Context for drawing a cursor in a non-default face. */
   GC scratch_cursor_gc;
-
-  /* Information about the range of text currently shown in
-     mouse-face.  */
-  Mouse_HLInfo mouse_highlight;
 
   /* Logical identifier of this display.  */
   unsigned x_id;
@@ -297,15 +259,6 @@ struct x_display_info
 
   /* The number of fonts opened for this display.  */
   int n_fonts;
-
-  /* Pointer to bitmap records.  */
-  struct x_bitmap_record *bitmaps;
-
-  /* Allocated size of bitmaps field.  */
-  ptrdiff_t bitmaps_size;
-
-  /* Last used bitmap index.  */
-  ptrdiff_t bitmaps_last;
 
   /* Which modifier keys are on which modifier bits?
 
@@ -384,24 +337,11 @@ struct x_display_info
      received a FocusIn event for it.  */
   struct frame *x_focus_event_frame;
 
-  /* The frame which currently has the visual highlight, and should get
-     keyboard input (other sorts of input have the frame encoded in the
-     event).  It points to the X focus frame's selected window's
-     frame.  It differs from x_focus_frame when we're using a global
-     minibuffer.  */
-  struct frame *highlight_frame;
-
   /* The frame waiting to be auto-raised in XTread_socket.  */
   struct frame *x_pending_autoraise_frame;
 
-  /* The frame where the mouse was last time we reported a ButtonPress event.  */
-  struct frame *last_mouse_frame;
-
   /* The frame where the mouse was last time we reported a mouse position.  */
   struct frame *last_mouse_glyph_frame;
-
-  /* The frame where the mouse was last time we reported a mouse motion.  */
-  struct frame *last_mouse_motion_frame;
 
   /* The scroll bar in which the last X motion event occurred.  */
   struct scroll_bar *last_mouse_scroll_bar;
@@ -409,22 +349,9 @@ struct x_display_info
   /* Time of last user interaction as returned in X events on this display.  */
   Time last_user_time;
 
-  /* Position where the mouse was last time we reported a motion.
-     This is a position on last_mouse_motion_frame.  */
-  int last_mouse_motion_x;
-  int last_mouse_motion_y;
-
   /* Where the mouse was last time we reported a mouse position.
      This is a rectangle on last_mouse_glyph_frame.  */
   XRectangle last_mouse_glyph;
-
-  /* Time of last mouse movement on this display.  This is a hack because
-     we would really prefer that XTmouse_position would return the time
-     associated with the position it returns, but there doesn't seem to be
-     any way to wrest the time-stamp from the server along with the position
-     query.  So, we just keep track of the time of the last movement we
-     received, and return that in hopes that it's somewhat accurate.  */
-  Time last_mouse_movement_time;
 
   /* The gray pixmap.  */
   Pixmap gray;

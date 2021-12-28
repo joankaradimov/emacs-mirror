@@ -82,47 +82,112 @@ extern void w32_fullscreen_rect (HWND hwnd, int fsmode, RECT normal,
 /* For each display (currently only one on w32), we have a structure that
    records information about it.  */
 
-struct w32_display_info
+struct gui_display_info
 {
-  /* Chain of all w32_display_info structures.  */
-  struct w32_display_info *next;
-
-  /* The generic display parameters corresponding to this w32 display.  */
-  struct terminal *terminal;
+  /* Chain of all gui_display_info structures.  */
+  struct gui_display_info *next;
 
   /* This is a cons cell of the form (NAME . FONT-LIST-CACHE).  */
   Lisp_Object name_list_element;
 
-  /* Number of frames that are on this display.  */
-  int reference_count;
+  /* The generic display parameters corresponding to this display.  */
+  struct terminal *terminal;
 
-  /* Dots per inch of the screen.  */
+  /* The cursor to use for vertical scroll bars.  */
+  Emacs_Cursor vertical_scroll_bar_cursor;
+
+  /* The cursor to use for horizontal scroll bars.  */
+  Emacs_Cursor horizontal_scroll_bar_cursor;
+
+  /* DPI resolution of this screen */
   double resx, resy;
-
-  /* Number of planes on this screen.  */
-  int n_planes;
-
-  /* Number of bits per pixel on this screen.  */
-  int n_cbits;
-
-  /* Mask of things that cause the mouse to be grabbed.  */
-  int grabbed;
-
-  /* Emacs bitmap-id of the default icon bitmap for this frame.
-     Or -1 if none has been allocated yet.  */
-  ptrdiff_t icon_bitmap_id;
 
   /* The root window of this screen.  */
   Window root_window;
 
-  /* The cursor to use for vertical scroll bars.  */
-  HCURSOR vertical_scroll_bar_cursor;
+  /* Number of planes on this screen.  */
+  int n_planes;
 
-  /* The cursor to use for horizontal scroll bars.  */
-  HCURSOR horizontal_scroll_bar_cursor;
+  /* Mask of things that cause the mouse to be grabbed.  */
+  int grabbed;
 
   /* Resource data base */
-  const char *rdb;
+  void* rdb;
+
+  /* Minimum width over all characters in all fonts in font_table.  */
+  int smallest_char_width;
+
+  /* Minimum font height over all fonts in font_table.  */
+  int smallest_font_height;
+
+  /* The frame where the mouse was last time we reported a mouse event.  */
+  struct frame *last_mouse_frame;
+
+  /* The frame where the mouse was last time we reported a mouse motion.  */
+  struct frame *last_mouse_motion_frame;
+
+  /* The frame which currently has the visual highlight, and should get
+     keyboard input (other sorts of input have the frame encoded in the
+     event).  It points to the focus frame's selected window's
+     frame.  It differs from w32_focus_frame when we're using a global
+     minibuffer.  */
+  struct frame *highlight_frame;
+
+  /* Position where the mouse was last time we reported a motion.
+     This is a position on last_mouse_motion_frame.  */
+  int last_mouse_motion_x;
+  int last_mouse_motion_y;
+
+  /* Pointer to bitmap records.  */
+  union {
+#ifdef HAVE_X_WINDOWS
+    struct x_bitmap_record;
+#endif
+
+#ifdef HAVE_NTGUI
+    struct w32_bitmap_record;
+#endif
+
+#ifdef HAVE_NS
+    struct ns_bitmap_record;
+#endif
+
+#ifdef HAVE_PGTK
+    struct pgtk_bitmap_record;
+#endif
+
+#ifdef HAVE_HAIKU
+    struct haiku_bitmap_record;
+#endif
+  } *bitmaps;
+
+  /* Allocated size of bitmaps field.  */
+  ptrdiff_t bitmaps_size;
+
+  /* Last used bitmap index.  */
+  ptrdiff_t bitmaps_last;
+
+  /* Information about the range of text currently shown in
+     mouse-face.  */
+  Mouse_HLInfo mouse_highlight;
+
+  /* Time of last mouse movement.  */
+  Time last_mouse_movement_time;
+};
+
+struct w32_display_info
+{
+  struct gui_display_info;
+
+  /* Number of frames that are on this display.  */
+  int reference_count;
+
+  /* Number of bits per pixel on this screen.  */
+  int n_cbits;
+
+  /* Emacs bitmap-id of the default icon bitmap for this frame.
+     Or -1 if none has been allocated yet.  */
+  ptrdiff_t icon_bitmap_id;
 
   /* color palette information.  */
   int has_palette;
@@ -137,18 +202,8 @@ struct w32_display_info
      received; value is reset after key is received.  */
   int faked_key;
 
-  /* Minimum width over all characters in all fonts in font_table.  */
-  int smallest_char_width;
-
-  /* Minimum font height over all fonts in font_table.  */
-  int smallest_font_height;
-
   /* Reusable Graphics Context for drawing a cursor in a non-default face. */
   Emacs_GC *scratch_cursor_gc;
-
-  /* Information about the range of text currently shown in
-     mouse-face.  */
-  Mouse_HLInfo mouse_highlight;
 
   char *w32_id_name;
 
@@ -156,15 +211,6 @@ struct w32_display_info
      font_table[n] is used and valid if 0 <= n < n_fonts. 0 <=
      n_fonts <= font_table_size. and font_table[i].name != 0. */
   int n_fonts;
-
-  /* Pointer to bitmap records.  */
-  struct w32_bitmap_record *bitmaps;
-
-  /* Allocated size of bitmaps field.  */
-  ptrdiff_t bitmaps_size;
-
-  /* Last used bitmap index.  */
-  ptrdiff_t bitmaps_last;
 
   /* The frame (if any) which has the window that has keyboard focus.
      Zero if none.  This is examined by Ffocus_frame in w32fns.c.  Note
@@ -179,29 +225,11 @@ struct w32_display_info
      received a FocusIn event for it.  */
   struct frame *w32_focus_event_frame;
 
-  /* The frame which currently has the visual highlight, and should get
-     keyboard input (other sorts of input have the frame encoded in the
-     event).  It points to the focus frame's selected window's
-     frame.  It differs from w32_focus_frame when we're using a global
-     minibuffer.  */
-  struct frame *highlight_frame;
-
   /* The frame waiting to be auto-raised in w32_read_socket.  */
   struct frame *w32_pending_autoraise_frame;
 
-  /* The frame where the mouse was last time we reported a mouse event.  */
-  struct frame *last_mouse_frame;
-
-  /* The frame where the mouse was last time we reported a mouse motion.  */
-  struct frame *last_mouse_motion_frame;
-
   /* The frame where the mouse was last time we reported a mouse position.  */
   struct frame *last_mouse_glyph_frame;
-
-  /* Position where the mouse was last time we reported a motion.
-     This is a position on last_mouse_motion_frame.  */
-  int last_mouse_motion_x;
-  int last_mouse_motion_y;
 
   /* Where the mouse was last time we reported a mouse position.
      This is a rectangle on last_mouse_glyph_frame.  */
@@ -213,9 +241,6 @@ struct w32_display_info
   /* Mouse position on the scroll bar above.
      FIXME: shouldn't it be a member of struct scroll_bar?  */
   int last_mouse_scroll_bar_pos;
-
-  /* Time of last mouse movement.  */
-  Time last_mouse_movement_time;
 
   /* Value returned by last call of ShowCursor.  */
   int cursor_display_counter;

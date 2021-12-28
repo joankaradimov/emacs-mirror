@@ -800,72 +800,17 @@ struct nsfont_info
 /* Initialized in ns_initialize_display_info ().  */
 struct ns_display_info
 {
-  /* Chain of all ns_display_info structures.  */
-  struct ns_display_info *next;
-
-  /* The generic display parameters corresponding to this NS display.  */
-  struct terminal *terminal;
-
-  /* This is a cons cell of the form (NAME . FONT-LIST-CACHE).  */
-  Lisp_Object name_list_element;
+  struct gui_display_info;
 
   /* The number of fonts loaded.  */
   int n_fonts;
 
-  /* Minimum width over all characters in all fonts in font_table.  */
-  int smallest_char_width;
-
-  /* Minimum font height over all fonts in font_table.  */
-  int smallest_font_height;
-
-  struct ns_bitmap_record *bitmaps;
-  ptrdiff_t bitmaps_size;
-  ptrdiff_t bitmaps_last;
-
-  /* DPI resolution of this screen */
-  double resx, resy;
-
-  /* Mask of things that cause the mouse to be grabbed */
-  int grabbed;
-
-  int n_planes;
-
   int color_p;
 
-  Window root_window;
-
-  /* Xism */
-  Lisp_Object rdb;
-
-  /* The cursor to use for vertical scroll bars.  */
-  Emacs_Cursor vertical_scroll_bar_cursor;
-
-  /* The cursor to use for horizontal scroll bars.  */
-  Emacs_Cursor horizontal_scroll_bar_cursor;
-
-  /* Information about the range of text currently shown in
-     mouse-face.  */
-  Mouse_HLInfo mouse_highlight;
-
-  struct frame *highlight_frame;
   struct frame *ns_focus_frame;
-
-  /* The frame where the mouse was last time we reported a mouse event.  */
-  struct frame *last_mouse_frame;
-
-  /* The frame where the mouse was last time we reported a mouse motion.  */
-  struct frame *last_mouse_motion_frame;
-
-  /* Position where the mouse was last time we reported a motion.
-     This is a position on last_mouse_motion_frame.  */
-  int last_mouse_motion_x;
-  int last_mouse_motion_y;
 
   /* Where the mouse was last time we reported a mouse position.  */
   NSRect last_mouse_glyph;
-
-  /* Time of last mouse movement.  */
-  Time last_mouse_movement_time;
 
   /* The scroll bar in which the last motion event occurred.  */
 #ifdef __OBJC__
