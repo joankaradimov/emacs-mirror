@@ -1993,7 +1993,7 @@ w32_draw_image_foreground (struct glyph_string *s)
 }
 
 size_t
-w32_image_size (Emacs_Pixmap pixmap)
+w32_image_size (HBITMAP pixmap)
 {
   BITMAP bm_info;
   size_t rv = 0;

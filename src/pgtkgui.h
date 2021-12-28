@@ -42,16 +42,11 @@ typedef unichar XChar2b;
 #define XCHAR2B_BYTE2(chp) \
   (*(chp) & 0x00ff)
 
-
-typedef struct _GdkCursor *Emacs_Cursor;
-
 typedef void *Color;
-typedef int Window;
 typedef struct _GdkDisplay Display;
 
 /* Xism */
 typedef void *XrmDatabase;
-
 
 /* Some sort of attempt to normalize rectangle handling.. seems a bit much
    for what is accomplished.  */

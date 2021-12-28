@@ -41,14 +41,11 @@ struct haiku_rect
 
 typedef void *haiku;
 
-typedef haiku Emacs_Pixmap;
 typedef haiku Emacs_Window;
-typedef haiku Emacs_Cursor;
 typedef haiku Drawable;
 
 #include "xutilcompat.h"
 
-typedef haiku Window;
 typedef int Display;
 
 #ifdef _cplusplus

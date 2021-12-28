@@ -110,36 +110,63 @@ typedef struct
   char *data;			/* pointer to image data */
   int bytes_per_line;		/* accelarator to next line */
   int bits_per_pixel;		/* bits per pixel (ZPixmap) */
-} Emacs_XImage;
-typedef Emacs_XImage *Emacs_Pixmap;
-typedef Emacs_XImage *Emacs_Pix_Container;
-typedef Emacs_XImage *Emacs_Pix_Context;
+} Cairo_XImage;
+typedef Cairo_XImage *Emacs_Pixmap;
+typedef Cairo_XImage *Emacs_Pix_Container;
+typedef Cairo_XImage *Emacs_Pix_Context;
 #endif
 
 #ifdef HAVE_NTGUI
 #include "w32gui.h"
+/* Windows equivalent of XImage.  */
+typedef struct
+{
+  unsigned char * data;
+  BITMAPINFO info;
+  /* Optional RGBQUAD array for palette follows (see BITMAPINFO docs).  */
+} XImage;
+typedef HDC Display;  /* HDC so it doesn't conflict with xpm lib. */
+typedef HCURSOR Emacs_Cursor;
+typedef HBITMAP Emacs_Pixmap;
 typedef XImage *Emacs_Pix_Container;
 typedef HDC Emacs_Pix_Context;
+typedef HWND Window;
 #endif
 
 #ifdef HAVE_NS
 #include "nsgui.h"
+#ifdef __OBJC__
+typedef NSCursor *Emacs_Cursor;
+#else
+typedef void *Emacs_Cursor;
+#endif
+#ifdef __OBJC__
+typedef id Emacs_Pixmap;
+#else
+typedef void *Emacs_Pixmap;
+#endif
 /* Following typedef needed to accommodate the MSDOS port, believe it or not.  */
 typedef Emacs_Pixmap Emacs_Pix_Container;
 typedef Emacs_Pixmap Emacs_Pix_Context;
+typedef int Window;
 #endif
 
 #ifdef HAVE_PGTK
 #include "pgtkgui.h"
 /* Following typedef needed to accommodate the MSDOS port, believe it or not.  */
+typedef struct _GdkCursor *Emacs_Cursor;
 typedef Emacs_Pixmap XImagePtr;
 typedef XImagePtr XImagePtr_or_DC;
+typedef int Window;
 #endif /* HAVE_PGTK */
 
 #ifdef HAVE_HAIKU
 #include "haikugui.h"
-typedef Emacs_Pixmap Emacs_Pix_Container;
-typedef Emacs_Pixmap Emacs_Pix_Context;
+typedef haiku Emacs_Cursor;
+typedef haiku Emacs_Pixmap;
+typedef haiku Emacs_Pix_Container;
+typedef haiku Emacs_Pix_Context;
+typedef haiku Window;
 #endif
 
 #ifdef HAVE_WINDOW_SYSTEM

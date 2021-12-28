@@ -58,20 +58,6 @@ typedef struct _XCharStruct
   int descent;
 } XCharStruct;
 
-#ifdef __OBJC__
-typedef id Emacs_Pixmap;
-#else
-typedef void *Emacs_Pixmap;
-#endif
-
-#ifdef __OBJC__
-typedef NSCursor *Emacs_Cursor;
-#else
-typedef void *Emacs_Cursor;
-#endif
-
-typedef int Window;
-
 #ifndef __OBJC__
 #if defined (__LP64__) && __LP64__
 typedef double CGFloat;

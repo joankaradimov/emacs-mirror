@@ -28,26 +28,12 @@ along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.  */
 #define local_alloc(n) (HeapAlloc (local_heap, HEAP_ZERO_MEMORY, (n)))
 #define local_free(p) (HeapFree (local_heap, 0, ((LPVOID) (p))))
 
-typedef HBITMAP Emacs_Pixmap;
-
-typedef HWND Window;
-typedef HDC Display;  /* HDC so it doesn't conflict with xpm lib.  */
-typedef HCURSOR Emacs_Cursor;
-
-/* Windows equivalent of XImage.  */
-typedef struct _XImage
-{
-  unsigned char * data;
-  BITMAPINFO info;
-  /* Optional RGBQUAD array for palette follows (see BITMAPINFO docs).  */
-} XImage;
-
 struct image;
 extern int w32_load_image (struct frame *f, struct image *img,
                            Lisp_Object spec_file, Lisp_Object spec_data);
 extern bool w32_can_use_native_image_api (Lisp_Object);
 extern void w32_gdiplus_shutdown (void);
-extern size_t w32_image_size (Emacs_Pixmap);
+extern size_t w32_image_size (HBITMAP);
 
 #define FACE_DEFAULT (~0)
 
