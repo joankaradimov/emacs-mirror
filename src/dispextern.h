@@ -110,9 +110,10 @@ typedef struct
   char *data;			/* pointer to image data */
   int bytes_per_line;		/* accelarator to next line */
   int bits_per_pixel;		/* bits per pixel (ZPixmap) */
-} *Emacs_Pix_Container;
-typedef Emacs_Pix_Container Emacs_Pixmap;
-typedef Emacs_Pix_Container Emacs_Pix_Context;
+} Emacs_XImage;
+typedef Emacs_XImage *Emacs_Pixmap;
+typedef Emacs_XImage *Emacs_Pix_Container;
+typedef Emacs_XImage *Emacs_Pix_Context;
 #endif
 
 #ifdef HAVE_NTGUI
