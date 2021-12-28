@@ -1392,7 +1392,7 @@ haiku_draw_image_glyph_string (struct glyph_string *s)
       Emacs_Rectangle cr, ir, r;
 
       get_glyph_string_clip_rect (s, &nr);
-      CONVERT_TO_EMACS_RECT (cr, nr);
+      haiku_rect_to_emacs_rect (&cr, &nr);
       x = s->x;
       y = s->ybase - image_ascent (s->img, face, &s->slice);
 
@@ -3387,6 +3387,9 @@ haiku_create_terminal (struct haiku_display_info *dpyinfo)
   terminal->menu_show_hook = haiku_menu_show;
   terminal->toggle_invisible_pointer_hook = haiku_toggle_invisible_pointer;
   terminal->fullscreen_hook = haiku_fullscreen;
+  terminal->convert_to_emacs_rect = haiku_rect_to_emacs_rect;
+  terminal->convert_from_emacs_rect = haiku_rect_from_emacs_rect;
+  terminal->store_native_rect = haiku_store_native_rect;
 
   return terminal;
 }
@@ -3459,6 +3462,40 @@ put_xrm_resource (Lisp_Object name, Lisp_Object val)
     Fsetcdr (lval, val);
   else
     rdb = Fcons (Fcons (name, val), rdb);
+}
+
+void
+haiku_rect_to_emacs_rect(Emacs_Rectangle *xr, void *nr)
+{
+  haiku_rect* haiku_rectangle = nr;
+
+  xr->x = haiku_rectangle->x;
+  xr->y = haiku_rectangle->y;
+  xr->width = haiku_rectangle->width;
+  xr->height = haiku_rectangle->height;
+}
+
+void
+haiku_rect_from_emacs_rect(Emacs_Rectangle *xr, void *nrs, int offset)
+{
+  haiku_rect* haiku_rectangle = nrs;
+  haiku_rectangle += offset;
+
+  haiku_rectangle->x = xr->x;
+  haiku_rectangle->y = xr->y;
+  haiku_rectangle->width = xr->width;
+  haiku_rectangle->height = xr->height;
+}
+
+void
+haiku_store_native_rect(void *nr, int px, int py, int pwidth, int pheight)
+{
+  haiku_rect* haiku_rectangle = nr;
+
+  haiku_rectangle->x = px;
+  haiku_rectangle->y = py;
+  haiku_rectangle->width  = pwidth;
+  haiku_rectangle->height = pheight;
 }
 
 void

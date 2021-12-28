@@ -1204,6 +1204,11 @@ struct input_event;
 extern void ns_init_events (struct input_event *);
 extern void ns_finish_events (void);
 
+extern void ns_rect_to_emacs_rect(Emacs_Rectangle *xr, void *nr);
+extern void ns_rect_from_emacs_rect(Emacs_Rectangle *xr, void *nrs, int offset);
+extern void ns_store_native_rect(void *nr, int px, int py,
+				 int pwidth, int pheight);
+
 extern double ns_frame_scale_factor (struct frame *);
 
 #ifdef NS_IMPL_GNUSTEP

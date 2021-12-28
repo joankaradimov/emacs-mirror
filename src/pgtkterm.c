@@ -1169,10 +1169,10 @@ static void
 x_set_glyph_string_clipping_exactly (struct glyph_string *src,
 				     struct glyph_string *dst, cairo_t * cr)
 {
-  dst->clip[0].x = src->x;
-  dst->clip[0].y = src->y;
-  dst->clip[0].width = src->width;
-  dst->clip[0].height = src->height;
+  dst->clip[0].pgtk.x = src->x;
+  dst->clip[0].pgtk.y = src->y;
+  dst->clip[0].pgtk.width = src->width;
+  dst->clip[0].pgtk.height = src->height;
   dst->num_clips = 1;
 
   cairo_rectangle (cr, src->x, src->y, src->width, src->height);
@@ -3099,6 +3099,40 @@ pgtk_text_icon (struct frame *f, const char *icon_name)
   return false;
 }
 
+void
+pgtk_rect_to_emacs_rect(Emacs_Rectangle *xr, void *nr)
+{
+  XRectangle* pgtk_rectangle = nr;
+
+  xr->x = pgtk_rectangle->x;
+  xr->y = pgtk_rectangle->y;
+  xr->width = pgtk_rectangle->width;
+  xr->height = pgtk_rectangle->height;
+}
+
+void
+pgtk_rect_from_emacs_rect(Emacs_Rectangle *xr, void *nrs, int offset)
+{
+  XRectangle* pgtk_rectangle = nrs;
+  pgtk_rectangle += offset;
+
+  pgtk_rectangle->x = xr->x;
+  pgtk_rectangle->y = xr->y;
+  pgtk_rectangle->width = xr->width;
+  pgtk_rectangle->height = xr->height;
+}
+
+void
+pgtk_store_native_rect(void *nr, int px, int py, int pwidth, int pheight)
+{
+  XRectangle* pgtk_rectangle = nr;
+
+  pgtk_rectangle->x = px;
+  pgtk_rectangle->y = py;
+  pgtk_rectangle->width = pwidth;
+  pgtk_rectangle->height = pheight;
+}
+
 /***********************************************************************
 		    Starting and ending an update
  ***********************************************************************/
@@ -4738,6 +4772,9 @@ pgtk_create_terminal (struct pgtk_display_info *dpyinfo)
   terminal->focus_frame_hook = pgtk_focus_frame;
   terminal->set_frame_offset_hook = x_set_offset;
   terminal->free_pixmap = pgtk_free_pixmap;
+  terminal->convert_to_emacs_rect = pgtk_rect_to_emacs_rect;
+  terminal->convert_from_emacs_rect = pgtk_rect_from_emacs_rect;
+  terminal->store_native_rect = pgtk_store_native_rect;
 
   /* Other hooks are NULL by default.  */
 

@@ -83,27 +83,6 @@ typedef struct _NSSize  { CGFloat width, height; } NSSize;
 typedef struct _NSRect  { NSPoint origin; NSSize size; } NSRect;
 #endif  /* NOT OBJC */
 
-#define NativeRectangle NSRect
-
-#define CONVERT_TO_EMACS_RECT(xr, nr)		\
-  ((xr).x     = (nr).origin.x,			\
-   (xr).y     = (nr).origin.y,			\
-   (xr).width = (nr).size.width,		\
-   (xr).height = (nr).size.height)
-
-#define CONVERT_FROM_EMACS_RECT(xr, nr)		\
-  ((nr).origin.x    = (xr).x,			\
-   (nr).origin.y    = (xr).y,			\
-   (nr).size.width  = (xr).width,		\
-   (nr).size.height = (xr).height)
-
-#define STORE_NATIVE_RECT(nr, px, py, pwidth, pheight)	\
-  ((nr).origin.x    = (px),			\
-   (nr).origin.y    = (py),			\
-   (nr).size.width  = (pwidth),			\
-   (nr).size.height = (pheight))
-
-
 #include "xutilcompat.h"
 
 #endif  /* __NSGUI_H__ */

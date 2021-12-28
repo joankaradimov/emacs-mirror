@@ -890,6 +890,11 @@ extern void globals_of_w32notify (void);
 
 extern void w32_init_main_thread (void);
 
+extern void w32_rect_to_emacs_rect(Emacs_Rectangle *xr, void *nr);
+extern void w32_rect_from_emacs_rect(Emacs_Rectangle *xr, void *nrs, int offset);
+extern void w32_store_native_rect(void *nr, int px, int py,
+                                  int pwidth, int pheight);
+
 #ifdef CYGWIN
 extern int w32_message_fd;
 #endif /* CYGWIN */

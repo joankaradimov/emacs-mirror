@@ -63,24 +63,4 @@ typedef struct
 
 #include "xutilcompat.h"
 
-#define NativeRectangle XRectangle
-
-#define CONVERT_TO_EMACS_RECT(xr, nr)		\
-  ((xr).x     = (nr).x,				\
-   (xr).y     = (nr).y,				\
-   (xr).width = (nr).width,			\
-   (xr).height = (nr).height)
-
-#define CONVERT_FROM_EMACS_RECT(xr, nr)		\
-  ((nr).x      = (xr).x,			\
-   (nr).y      = (xr).y,			\
-   (nr).width  = (xr).width,			\
-   (nr).height = (xr).height)
-
-#define STORE_NATIVE_RECT(nr, px, py, pwidth, pheight)	\
-  ((nr).x      = (px),					\
-   (nr).y      = (py),					\
-   (nr).width  = (pwidth),				\
-   (nr).height = (pheight))
-
 #endif /* __PGTKGUI_H__ */

@@ -659,6 +659,11 @@ extern bool xg_set_icon_from_xpm_data (struct frame *f, const char **data);
 
 extern bool pgtk_text_icon (struct frame *f, const char *icon_name);
 
+extern void pgtk_rect_to_emacs_rect(Emacs_Rectangle *xr, void *nr);
+extern void pgtk_rect_from_emacs_rect(Emacs_Rectangle *xr, void *nrs, int offset);
+extern void pgtk_store_native_rect(void *nr, int px, int py,
+                                  int pwidth, int pheight);
+
 extern double pgtk_frame_scale_factor (struct frame *);
 
 #endif /* HAVE_PGTK */

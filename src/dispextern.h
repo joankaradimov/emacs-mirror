@@ -153,9 +153,7 @@ typedef Emacs_Pixmap Emacs_Pix_Context;
 typedef void *Emacs_Cursor;
 #endif
 
-#ifndef NativeRectangle
-#define NativeRectangle int
-#endif
+typedef void NativeRectangle;
 
 /* Text cursor types.  */
 
@@ -1427,7 +1425,25 @@ struct glyph_string
   struct glyph_string *clip_head, *clip_tail;
 
   /* The current clipping areas.  */
-  NativeRectangle clip[2];
+  union {
+    /* TODO: X */
+
+#ifdef HAVE_NTGUI
+    RECT w32;
+#endif
+
+#ifdef HAVE_NS
+    NSRect ns;
+#endif
+
+#ifdef HAVE_PGTK
+    XRectangle pgtk;
+#endif
+
+#ifdef HAVE_HAIKU
+    haiku_rectangle haiku;
+#endif
+  } clip[2];
 
   /* Number of clipping areas. */
   int num_clips;

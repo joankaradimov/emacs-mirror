@@ -814,6 +814,10 @@ struct terminal
      frames on the terminal when it calls this hook, so infinite
      recursion is prevented.  */
   void (*delete_terminal_hook) (struct terminal *);
+
+  void (*convert_to_emacs_rect)(Emacs_Rectangle *xr, void *nr);
+  void (*convert_from_emacs_rect)(Emacs_Rectangle *xr, void *nrs, int offset);
+  void (*store_native_rect)(void *nr, int px, int py, int pwidth, int pheight);
 } GCALIGNED_STRUCT;
 
 INLINE bool

@@ -377,14 +377,14 @@ w32_draw_underwave (struct glyph_string *s, COLORREF color)
   wave_clip.height = wave_height;
 
   get_glyph_string_clip_rect (s, &w32_string_clip);
-  CONVERT_TO_EMACS_RECT (string_clip, w32_string_clip);
+  w32_rect_to_emacs_rect (&string_clip, &w32_string_clip);
 
   if (!gui_intersect_rectangles (&wave_clip, &string_clip, &final_clip))
     return;
 
   hp = CreatePen (PS_SOLID, thickness, color);
   oldhp = SelectObject (s->hdc, hp);
-  CONVERT_FROM_EMACS_RECT (final_clip, w32_final_clip);
+  w32_rect_from_emacs_rect (&final_clip, &w32_final_clip, 0);
   w32_set_clip_rectangle (s->hdc, &w32_final_clip);
 
   /* Draw the waves */
@@ -1091,7 +1091,7 @@ w32_set_glyph_string_clipping_exactly (struct glyph_string *src,
   r.right = r.left + src->width;
   r.top = src->y;
   r.bottom = r.top + src->height;
-  dst->clip[0] = r;
+  dst->clip[0].w32 = r;
   dst->num_clips = 1;
   w32_set_clip_rectangle (dst->hdc, &r);
 }
@@ -7358,6 +7358,9 @@ w32_create_terminal (struct w32_display_info *dpyinfo)
   terminal->free_pixmap = w32_free_pixmap;
   terminal->delete_frame_hook = w32_destroy_window;
   terminal->delete_terminal_hook = w32_delete_terminal;
+  terminal->convert_to_emacs_rect = w32_rect_to_emacs_rect;
+  terminal->convert_from_emacs_rect = w32_rect_from_emacs_rect;
+  terminal->store_native_rect = w32_store_native_rect;
   /* Other hooks are NULL by default.  */
 
   /* We don't yet support separate terminals on W32, so don't try to share
@@ -7496,6 +7499,41 @@ w32_init_main_thread (void)
 
 
 }
+
+void
+w32_rect_to_emacs_rect(Emacs_Rectangle *xr, void *nr)
+{
+  RECT* w32_rectangle = nr;
+
+  xr->x = w32_rectangle->left;
+  xr->y = w32_rectangle->top;
+  xr->width = w32_rectangle->right - w32_rectangle->left;
+  xr->height = w32_rectangle->bottom - w32_rectangle->top;
+}
+
+void
+w32_rect_from_emacs_rect(Emacs_Rectangle *xr, void *nrs, int offset)
+{
+  RECT* w32_rectangle = nrs;
+  w32_rectangle += offset;
+
+  w32_rectangle->left = xr->x;
+  w32_rectangle->top = xr->y;
+  w32_rectangle->right = xr->x + xr->width;
+  w32_rectangle->bottom = xr->y + xr->height;
+}
+
+void
+w32_store_native_rect(void *nr, int px, int py, int pwidth, int pheight)
+{
+  RECT* w32_rectangle = nr;
+
+  w32_rectangle->left = px;
+  w32_rectangle->top = py;
+  w32_rectangle->right = w32_rectangle->left + pwidth;
+  w32_rectangle->bottom = w32_rectangle->top + pheight;
+}
+
 
 DWORD WINAPI w32_msg_worker (void * arg);
 

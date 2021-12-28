@@ -279,6 +279,11 @@ extern void initialize_frame_menubar (struct frame *f);
 extern void run_menu_bar_help_event (struct frame *f, int mb_idx);
 extern void put_xrm_resource (Lisp_Object name, Lisp_Object val);
 
+extern void haiku_rect_to_emacs_rect(Emacs_Rectangle *xr, void *nr);
+extern void haiku_rect_from_emacs_rect(Emacs_Rectangle *xr, void *nrs, int offset);
+extern void haiku_store_native_rect(void *nr, int px, int py,
+                                    int pwidth, int pheight);
+
 #ifdef HAVE_NATIVE_IMAGE_API
 extern bool haiku_can_use_native_image_api (Lisp_Object type);
 extern int haiku_load_image (struct frame *f, struct image *img,

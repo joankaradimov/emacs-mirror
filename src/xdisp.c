@@ -2290,11 +2290,11 @@ pixel_to_glyph_coords (struct frame *f, int pix_x, int pix_y, int *x, int *y,
       pix_y = FRAME_PIXEL_Y_TO_LINE (f, pix_y);
 
       if (bounds)
-	STORE_NATIVE_RECT (*bounds,
-			   FRAME_COL_TO_PIXEL_X (f, pix_x),
-			   FRAME_LINE_TO_PIXEL_Y (f, pix_y),
-			   FRAME_COLUMN_WIDTH (f) - 1,
-			   FRAME_LINE_HEIGHT (f) - 1);
+	f->terminal->store_native_rect (bounds,
+					FRAME_COL_TO_PIXEL_X (f, pix_x),
+					FRAME_LINE_TO_PIXEL_Y (f, pix_y),
+					FRAME_COLUMN_WIDTH (f) - 1,
+					FRAME_LINE_HEIGHT (f) - 1);
 
       /* PXW: Should we clip pixels before converting to columns/lines?  */
       if (!noclip)
@@ -2565,11 +2565,14 @@ get_glyph_string_clip_rects (struct glyph_string *s, NativeRectangle *rects, int
   if ((s->for_overlaps & OVERLAPS_BOTH) == 0
       || ((s->for_overlaps & OVERLAPS_BOTH) == OVERLAPS_BOTH && n == 1))
     {
+      s->f->terminal->convert_from_emacs_rect (&r, rects, 0);
+      /*
 #ifdef CONVERT_FROM_EMACS_RECT
       CONVERT_FROM_EMACS_RECT (r, *rects);
 #else
       *rects = r;
 #endif
+      */
       return 1;
     }
   else
@@ -2578,11 +2581,14 @@ get_glyph_string_clip_rects (struct glyph_string *s, NativeRectangle *rects, int
 	 multiple clipping rectangles, we exclude the row of the glyph
 	 string from the clipping rectangle.  This is to avoid drawing
 	 the same text on the environment with anti-aliasing.  */
+      Emacs_Rectangle rs[2];
+      /*
 #ifdef CONVERT_FROM_EMACS_RECT
       Emacs_Rectangle rs[2];
 #else
       Emacs_Rectangle *rs = rects;
 #endif
+      */
       int i = 0, row_y = WINDOW_TO_FRAME_PIXEL_Y (s->w, s->row->y);
 
       if (s->for_overlaps & OVERLAPS_PRED)
@@ -2614,10 +2620,10 @@ get_glyph_string_clip_rects (struct glyph_string *s, NativeRectangle *rects, int
 	}
 
       n = i;
-#ifdef CONVERT_FROM_EMACS_RECT
+      /*#ifdef CONVERT_FROM_EMACS_RECT*/
       for (i = 0; i < n; i++)
-	CONVERT_FROM_EMACS_RECT (rs[i], rects[i]);
-#endif
+	s->f->terminal->convert_from_emacs_rect (rs + i, rects, i);
+      /*#endif*/
       return n;
     }
 }
@@ -2721,7 +2727,7 @@ remember_mouse_glyph (struct frame *f, int gx, int gy, NativeRectangle *rect)
 
   if (mouse_fine_grained_tracking)
     {
-      STORE_NATIVE_RECT (*rect, gx, gy, 1, 1);
+      f->terminal->store_native_rect (rect, gx, gy, 1, 1);
       return;
     }
 
@@ -2810,7 +2816,7 @@ remember_mouse_glyph (struct frame *f, int gx, int gy, NativeRectangle *rect)
 		{
 		  /* Don't remember when mouse is over image, as
 		     image may have hot-spots.  */
-		  STORE_NATIVE_RECT (*rect, 0, 0, 0, 0);
+		  f->terminal->store_native_rect (rect, 0, 0, 0, 0);
 		  return;
 		}
 	      width = g->pixel_width;
@@ -2943,7 +2949,7 @@ remember_mouse_glyph (struct frame *f, int gx, int gy, NativeRectangle *rect)
   gy += WINDOW_TOP_EDGE_Y (w);
 
  store_rect:
-  STORE_NATIVE_RECT (*rect, gx, gy, width, height);
+  f->terminal->store_native_rect (rect, gx, gy, width, height);
 
   /* Visible feedback for debugging.  */
 #if false && defined HAVE_X_WINDOWS

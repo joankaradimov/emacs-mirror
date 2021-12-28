@@ -477,6 +477,40 @@ ns_finish_events (void)
   emacs_event = NULL;
 }
 
+void
+ns_rect_to_emacs_rect(Emacs_Rectangle *xr, void *nr)
+{
+  NSRect* ns_rectangle = nr;
+
+  xr->x = ns_rectangle->origin.x;
+  xr->y = ns_rectangle->origin.y;
+  xr->width = ns_rectangle->size.width;
+  xr->height = ns_rectangle->size.height;
+}
+
+void
+ns_rect_from_emacs_rect(Emacs_Rectangle *xr, void *nrs, int offset)
+{
+  NSRect* ns_rectangle = nrs;
+  ns_rectangle += offset;
+
+  ns_rectangle->origin.x = xr->x;
+  ns_rectangle->origin.y = xr->y;
+  ns_rectangle->size.width = xr->width;
+  ns_rectangle->size.height = xr->height;
+}
+
+void
+ns_store_native_rect(void *nr, int px, int py, int pwidth, int pheight)
+{
+  NSRect* ns_rectangle = nr;
+
+  ns_rectangle->origin.x = px;
+  ns_rectangle->origin.y = py;
+  ns_rectangle->size.width = pwidth;
+  ns_rectangle->size.height = pheight;
+}
+
 static void
 hold_event (struct input_event *event)
 {
@@ -5019,6 +5053,9 @@ ns_create_terminal (struct ns_display_info *dpyinfo)
   terminal->delete_frame_hook = ns_destroy_window;
   terminal->delete_terminal_hook = ns_delete_terminal;
   terminal->change_tab_bar_height_hook = ns_change_tab_bar_height;
+  terminal->convert_to_emacs_rect = ns_rect_to_emacs_rect;
+  terminal->convert_from_emacs_rect = ns_rect_from_emacs_rect;
+  terminal->store_native_rect = ns_store_native_rect;
   /* Other hooks are NULL by default.  */
 
   return terminal;
