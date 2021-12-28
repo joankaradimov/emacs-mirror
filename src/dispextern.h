@@ -36,7 +36,6 @@ along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.  */
 #endif
 
 typedef XColor Emacs_Color;
-typedef Cursor Emacs_Cursor;
 #define No_Cursor (None)
 #ifndef USE_CAIRO
 typedef Pixmap Emacs_Pixmap;
@@ -95,10 +94,6 @@ typedef struct gui_display_info Display_Info;
 
 #ifdef HAVE_X_WINDOWS
 #include <X11/Xresource.h> /* for XrmDatabase */
-#ifndef USE_CAIRO
-typedef XImage *Emacs_Pix_Container;
-typedef XImage *Emacs_Pix_Context;
-#endif	/* !USE_CAIRO */
 #define NativeRectangle XRectangle
 #endif
 
@@ -112,8 +107,6 @@ typedef struct
   int bits_per_pixel;		/* bits per pixel (ZPixmap) */
 } Cairo_XImage;
 typedef Cairo_XImage *Emacs_Pixmap;
-typedef Cairo_XImage *Emacs_Pix_Container;
-typedef Cairo_XImage *Emacs_Pix_Context;
 #endif
 
 #ifdef HAVE_NTGUI
@@ -126,35 +119,23 @@ typedef struct
   /* Optional RGBQUAD array for palette follows (see BITMAPINFO docs).  */
 } XImage;
 typedef HDC Display;  /* HDC so it doesn't conflict with xpm lib. */
-typedef HCURSOR Emacs_Cursor;
 typedef HBITMAP Emacs_Pixmap;
-typedef XImage *Emacs_Pix_Container;
-typedef HDC Emacs_Pix_Context;
 typedef HWND Window;
 #endif
 
 #ifdef HAVE_NS
 #include "nsgui.h"
 #ifdef __OBJC__
-typedef NSCursor *Emacs_Cursor;
-#else
-typedef void *Emacs_Cursor;
-#endif
-#ifdef __OBJC__
 typedef id Emacs_Pixmap;
 #else
 typedef void *Emacs_Pixmap;
 #endif
-/* Following typedef needed to accommodate the MSDOS port, believe it or not.  */
-typedef Emacs_Pixmap Emacs_Pix_Container;
-typedef Emacs_Pixmap Emacs_Pix_Context;
 typedef int Window;
 #endif
 
 #ifdef HAVE_PGTK
 #include "pgtkgui.h"
 /* Following typedef needed to accommodate the MSDOS port, believe it or not.  */
-typedef struct _GdkCursor *Emacs_Cursor;
 typedef Emacs_Pixmap XImagePtr;
 typedef XImagePtr XImagePtr_or_DC;
 typedef int Window;
@@ -162,20 +143,99 @@ typedef int Window;
 
 #ifdef HAVE_HAIKU
 #include "haikugui.h"
-typedef haiku Emacs_Cursor;
 typedef haiku Emacs_Pixmap;
-typedef haiku Emacs_Pix_Container;
-typedef haiku Emacs_Pix_Context;
 typedef haiku Window;
 #endif
+
+typedef union
+{
+#ifdef HAVE_X_WINDOWS
+  Cursor *x;
+#endif
+
+#ifdef HAVE_NTGUI
+  HCURSOR w32;
+#endif
+
+#ifdef __OBJC__
+  NSCursor *ns;
+#else
+  void *ns;
+#endif
+
+#ifdef HAVE_PGTK
+  struct _GdkCursor *pgtk;
+#endif
+
+#ifdef HAVE_HAIKU
+  haiku haiku;
+#endif
+
+#ifndef HAVE_WINDOW_SYSTEM
+  void *tty;
+#endif
+  
+} Emacs_Cursor;
+
+typedef union
+{
+#ifdef HAVE_X_WINDOWS
+#ifndef USE_CAIRO
+  XImage *x;
+#endif
+#endif
+
+#ifdef USE_CAIRO
+  Cairo_XImage *cairo;
+#endif
+
+#ifdef HAVE_NTGUI
+  XImage *w32;
+#endif
+
+#ifdef __OBJC__
+  id ns;
+#else
+  void *ns;
+#endif
+
+#ifdef HAVE_HAIKU
+  haiku haiku;
+#endif
+
+} Emacs_Pix_Container;
+
+typedef union
+{
+#ifdef HAVE_X_WINDOWS
+#ifndef USE_CAIRO
+  XImage *x;
+#endif
+#endif
+
+#ifdef USE_CAIRO
+  Cairo_XImage *cairo;
+#endif
+
+#ifdef HAVE_NTGUI
+  HDC w32;
+#endif
+
+#ifdef __OBJC__
+  id ns;
+#else
+  void *ns;
+#endif
+
+#ifdef HAVE_HAIKU
+  haiku haiku;
+#endif
+
+} Emacs_Pix_Context;
 
 #ifdef HAVE_WINDOW_SYSTEM
 # include <time.h>
 # include "fontset.h"
-#endif
-
-#ifndef HAVE_WINDOW_SYSTEM
-typedef void *Emacs_Cursor;
 #endif
 
 typedef void NativeRectangle;
