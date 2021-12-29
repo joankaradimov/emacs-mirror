@@ -10500,6 +10500,21 @@ syms_of_w32fns (void)
   staticpro (&w32_grabbed_keys);
   w32_grabbed_keys = Qnil;
 
+  DEFVAR_BOOL ("w32-unicode-filenames",
+	       w32_unicode_filenames,
+     doc: /* Non-nil means use Unicode APIs when passing file names to the OS.
+A value of nil means file names passed to the OS APIs and returned
+from those APIs are encoded/decoded using the ANSI codepage
+specified by `file-name-coding-system'.
+
+This variable is set to non-nil by default when Emacs runs on Windows
+systems of the NT family, including W2K, XP, Vista, Windows 7 and
+Windows 8.  It is set to nil on Windows 9X.  */);
+  if (os_subtype == OS_SUBTYPE_9X)
+    w32_unicode_filenames = 0;
+  else
+    w32_unicode_filenames = 1;
+
   DEFVAR_LISP ("w32-color-map", Vw32_color_map,
 	       doc: /* An array of color name mappings for Windows.  */);
   Vw32_color_map = Qnil;
