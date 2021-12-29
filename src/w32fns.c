@@ -35,7 +35,9 @@ along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.  */
 #include <c-ctype.h>
 
 #include "lisp.h"
+#ifdef HAVE_NTGUI
 #include "w32term.h"
+#endif
 #include "frame.h"
 #include "window.h"
 #include "buffer.h"

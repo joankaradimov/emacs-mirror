@@ -58,7 +58,7 @@ static int been_here = -1;
 #include "menu.h"
 
 /* The name of the default console device.  */
-#ifdef WINDOWSNT
+#ifdef HAVE_NTGUI
 #include "w32term.h"
 #endif
 

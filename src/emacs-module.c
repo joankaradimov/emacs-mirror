@@ -118,6 +118,8 @@ To add a new module function, proceed as follows:
 
 #ifdef WINDOWSNT
 #include <windows.h>
+#endif
+#ifdef HAVE_NTGUI
 #include "w32term.h"
 #endif
 
